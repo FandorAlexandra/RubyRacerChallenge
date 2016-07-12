@@ -3,10 +3,11 @@ require_relative 'racer_utils'
 class RubyRacer
   attr_reader :players, :length
 
-  def initialize(players, length = 30)
+  def initialize(players, length = 30, landmines = 0)
     @status = Hash.new
     players.each {|player| @status[player] = 1}
     @length = length
+    @landmines = Array.new(landmines) { |index| 1 + rand(@length - 1)}
   end
 
   # Returns +true+ if one of the players has reached
@@ -26,7 +27,7 @@ class RubyRacer
   # Returns the winner if there is one, +nil+ otherwise
   def winner
     @status.each do |player, place|
-      if place == 30
+      if place == length
        return player
       end
     end
@@ -37,6 +38,12 @@ class RubyRacer
   def advance_player!(player)
     roll = Die.new.roll
     @status[player] += roll
+
+    #check for landmine
+    if @landmines.include? @status[player]
+      @status[player] = 1
+    end
+
     if @status[player] > length
       @status[player] = length
     end
@@ -52,6 +59,8 @@ class RubyRacer
       (1..@length).each do |space|
         if space == place
           print "|#{player}"
+        elsif @landmines.include? space
+          print "|*"
         else
           print "| "
         end
@@ -63,7 +72,7 @@ end
 
 players = ['a', 'b']
 
-game = RubyRacer.new(players)
+game = RubyRacer.new(players, 30, 0)
 
 # This clears the screen, so the fun can begin
 clear_screen!
@@ -79,7 +88,7 @@ until game.finished?
 
     # We need to sleep a little, otherwise the game will blow right past us.
     # See http://www.ruby-doc.org/core-1.9.3/Kernel.html#method-i-sleep
-    sleep(0.5)
+    sleep(0.2)
   end
 end
 
