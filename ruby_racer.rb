@@ -5,35 +5,58 @@ class RubyRacer
 
   def initialize(players, length = 30)
     @status = Hash.new(0)
+    #players.each {|player| @status[player] = 0}
+    @length = length
   end
 
   # Returns +true+ if one of the players has reached
   # the finish line, +false+ otherwise
   def finished?
+    if !@status
+      return false
+    end
+    @status.each do |player, place|
+      if place == 30
+        return true
+      end
+    end
+    return false
   end
 
   # Returns the winner if there is one, +nil+ otherwise
   def winner
+    @status.each do |player, place|
+      if place == 30
+       return player
+      end
+    end
+    return nil
   end
 
   # Rolls the dice and advances +player+ accordingly
   def advance_player!(player)
-    roll = Die.roll
+    roll = Die.new.roll
     @status[player] += roll
+    if @status[player] > length
+      @status[player] = length
+    end
   end
 
   # Prints the current game board
   # The board should have the same dimensions each time
   # and you should print over the previous board
   def print_board
+    move_to_home!
     clear_screen!
-    players.each do |player|
+    @status.each do |player, place|
       (1..length).each do |space|
-        if space == @status[player]
-          print "|#{player}|"
+        if space == place
+          print "|#{player}"
         else
-          print "|  |"
+          print "| "
         end
+      end
+      puts "|"
     end
   end
 end
