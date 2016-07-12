@@ -70,9 +70,40 @@ class RubyRacer
   end
 end
 
-players = ['a', 'b']
+def get_players
+  puts "How many players would you like to see race? (1-26)"
+  num_players = gets.chomp.to_i
+  while !(2..26).include? num_players
+    puts "Please enter number between 1 and 26"
+    num_players = gets.chomp.to_i
+  end
+  alphabet = ('a'..'z').to_a
+  players = alphabet[0..(num_players - 1)]
+end
 
-game = RubyRacer.new(players, 30, 3)
+def get_board
+  puts "How long should the track be? (7-40)"
+  length = gets.chomp.to_i
+  while !(7..40).include? length
+    puts "Please enter number between 7 and 40"
+    length = gets.chomp.to_i
+  end
+  return length
+end
+
+def get_landmines
+  puts "How many landmines would you like? (0-5)"
+  mines = gets.chomp.to_i
+  while !(0..5).include? mines
+    puts "Please enter number between 7 and 40"
+    mines = gets.chomp.to_i
+  end
+  return mines
+end
+
+players = get_players
+game = RubyRacer.new(players, get_board, get_landmines)
+
 
 # This clears the screen, so the fun can begin
 clear_screen!
