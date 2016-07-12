@@ -4,8 +4,8 @@ class RubyRacer
   attr_reader :players, :length
 
   def initialize(players, length = 30)
-    @status = Hash.new(0)
-    #players.each {|player| @status[player] = 0}
+    @status = Hash.new
+    players.each {|player| @status[player] = 1}
     @length = length
   end
 
@@ -16,7 +16,7 @@ class RubyRacer
       return false
     end
     @status.each do |player, place|
-      if place == 30
+      if place == @length
         return true
       end
     end
@@ -49,7 +49,7 @@ class RubyRacer
     move_to_home!
     clear_screen!
     @status.each do |player, place|
-      (1..length).each do |space|
+      (1..@length).each do |space|
         if space == place
           print "|#{player}"
         else
@@ -61,7 +61,7 @@ class RubyRacer
   end
 end
 
-players = ['a', 'b']
+players = ['a', 'b', 'c']
 
 game = RubyRacer.new(players)
 
