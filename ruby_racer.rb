@@ -61,7 +61,7 @@ class RubyRacer
   end
 end
 
-players = ['a', 'b', 'c']
+players = ['a', 'b']
 
 game = RubyRacer.new(players)
 
