@@ -72,7 +72,7 @@ end
 
 players = ['a', 'b']
 
-game = RubyRacer.new(players, 30, 0)
+game = RubyRacer.new(players, 30, 3)
 
 # This clears the screen, so the fun can begin
 clear_screen!
