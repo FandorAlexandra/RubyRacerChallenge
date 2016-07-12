@@ -70,60 +70,73 @@ class RubyRacer
   end
 end
 
-def get_players
-  puts "How many players would you like to see race? (1-26)"
-  num_players = gets.chomp.to_i
-  while !(2..26).include? num_players
-    puts "Please enter number between 1 and 26"
+#Creates custom game
+class RacerInteractor
+
+  def initialize
+    @players = get_players
+    board = get_board
+    landmines = get_landmines
+    @game = RubyRacer.new(@players, board, landmines)
+    play_game
+  end
+
+  def get_players
+    puts "How many players would you like to see race? (1-26)"
     num_players = gets.chomp.to_i
+    while !(2..26).include? num_players
+      puts "Please enter number between 1 and 26"
+      num_players = gets.chomp.to_i
+    end
+    alphabet = ('a'..'z').to_a
+    players = alphabet[0..(num_players - 1)]
   end
-  alphabet = ('a'..'z').to_a
-  players = alphabet[0..(num_players - 1)]
-end
 
-def get_board
-  puts "How long should the track be? (7-40)"
-  length = gets.chomp.to_i
-  while !(7..40).include? length
-    puts "Please enter number between 7 and 40"
+  def get_board
+    puts "How long should the track be? (7-40)"
     length = gets.chomp.to_i
+    while !(7..40).include? length
+      puts "Please enter number between 7 and 40"
+      length = gets.chomp.to_i
+    end
+    return length
   end
-  return length
-end
 
-def get_landmines
-  puts "How many landmines would you like? (0-5)"
-  mines = gets.chomp.to_i
-  while !(0..5).include? mines
-    puts "Please enter number between 7 and 40"
+  def get_landmines
+    puts "How many landmines would you like? (0-5)"
     mines = gets.chomp.to_i
+    while !(0..5).include? mines
+      puts "Please enter number between 7 and 40"
+      mines = gets.chomp.to_i
+    end
+    return mines
   end
-  return mines
+
+  def play_game
+    # This clears the screen, so the fun can begin
+    clear_screen!
+
+    until @game.finished?
+      @players.each do |player|
+        # This moves the cursor back to the upper-left of the screen
+        move_to_home!
+
+        # We print the board first so we see the initial, starting board
+        @game.print_board
+        @game.advance_player!(player)
+
+        # We need to sleep a little, otherwise the game will blow right past us.
+        # See http://www.ruby-doc.org/core-1.9.3/Kernel.html#method-i-sleep
+        sleep(0.2)
+      end
+    end
+
+    # The game is over, so we need to print the "winning" board
+    @game.print_board
+
+    puts "Player '#{@game.winner}' has won!"
+  end
+
 end
 
-players = get_players
-game = RubyRacer.new(players, get_board, get_landmines)
-
-
-# This clears the screen, so the fun can begin
-clear_screen!
-
-until game.finished?
-  players.each do |player|
-    # This moves the cursor back to the upper-left of the screen
-    move_to_home!
-
-    # We print the board first so we see the initial, starting board
-    game.print_board
-    game.advance_player!(player)
-
-    # We need to sleep a little, otherwise the game will blow right past us.
-    # See http://www.ruby-doc.org/core-1.9.3/Kernel.html#method-i-sleep
-    sleep(0.2)
-  end
-end
-
-# The game is over, so we need to print the "winning" board
-game.print_board
-
-puts "Player '#{game.winner}' has won!"
+racer = RacerInteractor.new
